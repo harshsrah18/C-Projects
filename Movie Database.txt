@@ -1,0 +1,122 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+#include <sstream>
+using namespace std;
+
+struct Movie {
+    string title;
+    int releaseYear;
+    string director;
+    string genre;
+};
+
+vector<Movie> movieDatabase;
+const string FILENAME = "movies.txt";
+
+void saveMoviesToFile() {
+    ofstream file(FILENAME);
+    for (const auto& movie : movieDatabase) {
+        file << movie.title << "," << movie.releaseYear << "," << movie.director << "," << movie.genre << endl;
+    }
+    file.close();
+}
+
+void loadMoviesFromFile() {
+    ifstream file(FILENAME);
+    string line, title, director, genre;
+    int releaseYear;
+    
+    while (getline(file, line)) {
+        stringstream ss(line);
+        getline(ss, title, ',');
+        ss >> releaseYear;
+        ss.ignore();
+        getline(ss, director, ',');
+        getline(ss, genre, ',');
+        movieDatabase.push_back({title, releaseYear, director, genre});
+    }
+    file.close();
+}
+
+void addMovie() {
+    Movie movie;
+    cout << "Enter movie title: ";
+    cin.ignore();
+    getline(cin, movie.title);
+    cout << "Enter release year: ";
+    cin >> movie.releaseYear;
+    cin.ignore();
+    cout << "Enter director: ";
+    getline(cin, movie.director);
+    cout << "Enter genre: ";
+    getline(cin, movie.genre);
+    
+    movieDatabase.push_back(movie);
+    saveMoviesToFile();
+    cout << "Movie added successfully!" << endl;
+}
+
+void displayMovies() {
+    for (const auto& movie : movieDatabase) {
+        cout << "Title: " << movie.title << ", Year: " << movie.releaseYear
+             << ", Director: " << movie.director << ", Genre: " << movie.genre << endl;
+    }
+}
+
+void searchMovie() {
+    string keyword;
+    cout << "Enter title or director to search: ";
+    cin.ignore();
+    getline(cin, keyword);
+    
+    for (const auto& movie : movieDatabase) {
+        if (movie.title.find(keyword) != string::npos || movie.director.find(keyword) != string::npos) {
+            cout << "Title: " << movie.title << ", Year: " << movie.releaseYear
+                 << ", Director: " << movie.director << ", Genre: " << movie.genre << endl;
+        }
+    }
+}
+
+void deleteMovie() {
+    string title;
+    cout << "Enter the title of the movie to delete: ";
+    cin.ignore();
+    getline(cin, title);
+    
+    auto it = remove_if(movieDatabase.begin(), movieDatabase.end(), [&](const Movie& movie) {
+        return movie.title == title;
+    });
+    
+    if (it != movieDatabase.end()) {
+        movieDatabase.erase(it, movieDatabase.end());
+        saveMoviesToFile();
+        cout << "Movie deleted successfully!" << endl;
+    } else {
+        cout << "Movie not found." << endl;
+    }
+}
+
+void menu() {
+    int choice;
+    loadMoviesFromFile();
+    do {
+        cout << "\nMovie Database Menu:\n1. Add Movie\n2. Display Movies\n3. Search Movie\n4. Delete Movie\n5. Exit\nEnter choice: ";
+        cin >> choice;
+        
+        switch (choice) {
+            case 1: addMovie(); break;
+            case 2: displayMovies(); break;
+            case 3: searchMovie(); break;
+            case 4: deleteMovie(); break;
+            case 5: cout << "Exiting program." << endl; break;
+            default: cout << "Invalid choice. Try again." << endl;
+        }
+    } while (choice != 5);
+}
+
+int main() {
+    menu();
+    return 0;
+}
