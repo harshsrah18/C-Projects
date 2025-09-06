@@ -1,0 +1,248 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+// Structure to store student details
+struct Student {
+    int rollNo;
+    char name[50];
+    char fatherName[50];
+    char dob[20];  // Date of Birth (DD/MM/YYYY)
+    char branch[50];
+    int yearOfAdmission;
+    int tentativeYearOfPassing;
+    char state[50];
+    char pin[10]; // Postal code
+    char country[50];
+};
+
+// Global array of student records
+struct Student students[MAX];
+int studentCount = 0;
+
+// Function to input a new student record
+void inputRecord() {
+    if(studentCount >= MAX) {
+        printf("Record limit reached. Cannot add more students.\n");
+        return;
+    }
+    struct Student s;
+
+    printf("Enter Roll No: ");
+    scanf("%d", &s.rollNo);
+    getchar(); // to clear the newline character from buffer
+
+    printf("Enter Name: ");
+    fgets(s.name, sizeof(s.name), stdin);
+    s.name[strcspn(s.name, "\n")] = 0;  // Remove newline character
+
+    printf("Enter Father's Name: ");
+    fgets(s.fatherName, sizeof(s.fatherName), stdin);
+    s.fatherName[strcspn(s.fatherName, "\n")] = 0;
+
+    printf("Enter Date of Birth (DD/MM/YYYY): ");
+    fgets(s.dob, sizeof(s.dob), stdin);
+    s.dob[strcspn(s.dob, "\n")] = 0;
+
+    printf("Enter Branch: ");
+    fgets(s.branch, sizeof(s.branch), stdin);
+    s.branch[strcspn(s.branch, "\n")] = 0;
+
+    printf("Enter Year of Admission: ");
+    scanf("%d", &s.yearOfAdmission);
+
+    printf("Enter Tentative Year of Passing: ");
+    scanf("%d", &s.tentativeYearOfPassing);
+    getchar();  // to clear the newline character
+
+    printf("Enter State: ");
+    fgets(s.state, sizeof(s.state), stdin);
+    s.state[strcspn(s.state, "\n")] = 0;
+
+    printf("Enter PIN: ");
+    fgets(s.pin, sizeof(s.pin), stdin);
+    s.pin[strcspn(s.pin, "\n")] = 0;
+
+    printf("Enter Country: ");
+    fgets(s.country, sizeof(s.country), stdin);
+    s.country[strcspn(s.country, "\n")] = 0;
+
+    students[studentCount++] = s;  // Add new student to the array
+    printf("Student record added successfully!\n");
+}
+
+// Function to update a student record
+void updateRecord() {
+    int rollNo, found = 0;
+    printf("Enter Roll No of student to update: ");
+    scanf("%d", &rollNo);
+
+    for(int i = 0; i < studentCount; i++) {
+        if(students[i].rollNo == rollNo) {
+            found = 1;
+            printf("Updating student with Roll No: %d\n", rollNo);
+
+            printf("Enter new Name: ");
+            getchar(); // to clear newline from buffer
+            fgets(students[i].name, sizeof(students[i].name), stdin);
+            students[i].name[strcspn(students[i].name, "\n")] = 0;
+
+            printf("Enter new Father's Name: ");
+            fgets(students[i].fatherName, sizeof(students[i].fatherName), stdin);
+            students[i].fatherName[strcspn(students[i].fatherName, "\n")] = 0;
+
+            printf("Enter new Date of Birth (DD/MM/YYYY): ");
+            fgets(students[i].dob, sizeof(students[i].dob), stdin);
+            students[i].dob[strcspn(students[i].dob, "\n")] = 0;
+
+            printf("Enter new Branch: ");
+            fgets(students[i].branch, sizeof(students[i].branch), stdin);
+            students[i].branch[strcspn(students[i].branch, "\n")] = 0;
+
+            printf("Enter new Year of Admission: ");
+            scanf("%d", &students[i].yearOfAdmission);
+
+            printf("Enter new Tentative Year of Passing: ");
+            scanf("%d", &students[i].tentativeYearOfPassing);
+            getchar();  // to clear the newline character
+
+            printf("Enter new State: ");
+            fgets(students[i].state, sizeof(students[i].state), stdin);
+            students[i].state[strcspn(students[i].state, "\n")] = 0;
+
+            printf("Enter new PIN: ");
+            fgets(students[i].pin, sizeof(students[i].pin), stdin);
+            students[i].pin[strcspn(students[i].pin, "\n")] = 0;
+
+            printf("Enter new Country: ");
+            fgets(students[i].country, sizeof(students[i].country), stdin);
+            students[i].country[strcspn(students[i].country, "\n")] = 0;
+
+            printf("Student record updated successfully!\n");
+            break;
+        }
+    }
+
+    if(!found) {
+        printf("Student with Roll No %d not found.\n", rollNo);
+    }
+}
+
+// Function to delete a student record
+void deleteRecord() {
+    int rollNo, found = 0;
+    printf("Enter Roll No of student to delete: ");
+    scanf("%d", &rollNo);
+
+    for(int i = 0; i < studentCount; i++) {
+        if(students[i].rollNo == rollNo) {
+            found = 1;
+            // Shift all the elements after the found record to the left
+            for(int j = i; j < studentCount - 1; j++) {
+                students[j] = students[j + 1];
+            }
+            studentCount--;  // Reduce the count of students
+            printf("Student record with Roll No %d deleted successfully!\n", rollNo);
+            break;
+        }
+    }
+
+    if(!found) {
+        printf("Student with Roll No %d not found.\n", rollNo);
+    }
+}
+
+// Function to generate report based on common name
+void generateReportByName() {
+    char name[50];
+    printf("Enter the name to search: ");
+    getchar();  // to clear the newline character
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = 0;
+
+    printf("Students with name '%s':\n", name);
+    for(int i = 0; i < studentCount; i++) {
+        if(strcasecmp(students[i].name, name) == 0) {
+            printf("Roll No: %d, Name: %s, Father's Name: %s\n", students[i].rollNo, students[i].name, students[i].fatherName);
+        }
+    }
+}
+
+// Function to generate report based on common state
+void generateReportByState() {
+    char state[50];
+    printf("Enter the state to search: ");
+    getchar();  // to clear the newline character
+    fgets(state, sizeof(state), stdin);
+    state[strcspn(state, "\n")] = 0;
+
+    printf("Students from state '%s':\n", state);
+    for(int i = 0; i < studentCount; i++) {
+        if(strcasecmp(students[i].state, state) == 0) {
+            printf("Roll No: %d, Name: %s, Father's Name: %s\n", students[i].rollNo, students[i].name, students[i].fatherName);
+        }
+    }
+}
+
+// Function to generate report based on common district (PIN code)
+void generateReportByDistrict() {
+    char pin[10];
+    printf("Enter the PIN to search: ");
+    getchar();  // to clear the newline character
+    fgets(pin, sizeof(pin), stdin);
+    pin[strcspn(pin, "\n")] = 0;
+
+    printf("Students with PIN '%s':\n", pin);
+    for(int i = 0; i < studentCount; i++) {
+        if(strcasecmp(students[i].pin, pin) == 0) {
+            printf("Roll No: %d, Name: %s, Father's Name: %s\n", students[i].rollNo, students[i].name, students[i].fatherName);
+        }
+    }
+}
+
+// Main function to interact with the user
+int main() {
+    int choice;
+
+    while(1) {
+        printf("\nStudent Records System\n");
+        printf("1. Add Student\n");
+        printf("2. Update Student Record\n");
+        printf("3. Delete Student Record\n");
+        printf("4. Generate Report by Name\n");
+        printf("5. Generate Report by State\n");
+        printf("6. Generate Report by District\n");
+        printf("7. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                inputRecord();
+                break;
+            case 2:
+                updateRecord();
+                break;
+            case 3:
+                deleteRecord();
+                break;
+            case 4:
+                generateReportByName();
+                break;
+            case 5:
+                generateReportByState();
+                break;
+            case 6:
+                generateReportByDistrict();
+                break;
+            case 7:
+                printf("Exiting program.\n");
+                return 0;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
+
