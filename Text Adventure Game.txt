@@ -1,0 +1,75 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+void forestPath();
+void riverPath();
+
+void gameOver() {
+    char retry;
+    while (true) {
+        cout << "\nGame Over! Try again? (y/n): ";
+        cin >> retry;
+        if (retry == 'y' || retry == 'Y') {
+            return; // Simply return instead of calling main()
+        } else if (retry == 'n' || retry == 'N') {
+            cout << "Thanks for playing!\n";
+            exit(0);
+        } else {
+            cout << "Invalid input. Enter 'y' or 'n'.\n";
+        }
+    }
+}
+
+void forestPath() {
+    string choice;
+    cout << "\nYou follow a mysterious path deeper into the forest. You see a cave. Do you enter? (yes/no): ";
+    cin >> choice;
+    
+    if (choice == "yes") {
+        cout << "\nInside the cave, you find a treasure chest! You win!\n";
+    } else if (choice == "no") {
+        cout << "\nYou ignore the cave and get lost in the forest...\n";
+        gameOver();
+    } else {
+        cout << "\nInvalid choice. Try again.\n";
+        forestPath();
+    }
+}
+
+void riverPath() {
+    string choice;
+    cout << "\nYou follow the sound of running water and find a river. Do you try to cross it? (yes/no): ";
+    cin >> choice;
+    
+    if (choice == "yes") {
+        cout << "\nThe river is too strong, and you get swept away...\n";
+        gameOver();
+    } else if (choice == "no") {
+        cout << "\nYou follow the river and find a bridge leading to safety. You win!\n";
+    } else {
+        cout << "\nInvalid choice. Try again.\n";
+        riverPath();
+    }
+}
+
+int main() {
+    while (true) {  // This loop allows restarting the game without recursion
+        cout << "Welcome to the Adventure Game!\n";
+        cout << "You find yourself at a fork in the road. Do you go left or right? (left/right): ";
+        
+        string choice;
+        cin >> choice;
+
+        if (choice == "left") {
+            forestPath();
+        } else if (choice == "right") {
+            riverPath();
+        } else {
+            cout << "Invalid choice. Try again.\n";
+        }
+    }
+    
+    return 0;
+}
